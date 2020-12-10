@@ -21,8 +21,8 @@ where
 {
     type Error = <M::Bus as i2c::Write>::Error;
 
-    fn write(&mut self, addr: u8, buffer: &[u8]) -> Result<(), Self::Error> {
-        self.mutex.lock(|bus| bus.write(addr, buffer))
+    fn try_write(&mut self, addr: u8, buffer: &[u8]) -> Result<(), Self::Error> {
+        self.mutex.lock(|bus| bus.try_write(addr, buffer))
     }
 }
 
@@ -32,8 +32,8 @@ where
 {
     type Error = <M::Bus as i2c::Read>::Error;
 
-    fn read(&mut self, addr: u8, buffer: &mut [u8]) -> Result<(), Self::Error> {
-        self.mutex.lock(|bus| bus.read(addr, buffer))
+    fn try_read(&mut self, addr: u8, buffer: &mut [u8]) -> Result<(), Self::Error> {
+        self.mutex.lock(|bus| bus.try_read(addr, buffer))
     }
 }
 
@@ -43,13 +43,13 @@ where
 {
     type Error = <M::Bus as i2c::WriteRead>::Error;
 
-    fn write_read(
+    fn try_write_read(
         &mut self,
         addr: u8,
         buffer_in: &[u8],
         buffer_out: &mut [u8],
     ) -> Result<(), Self::Error> {
-        self.mutex.lock(|bus| bus.write_read(addr, buffer_in, buffer_out))
+        self.mutex.lock(|bus| bus.try_write_read(addr, buffer_in, buffer_out))
     }
 }
 
@@ -79,8 +79,8 @@ where
 {
     type Error = <M::Bus as spi::Transfer<u8>>::Error;
 
-    fn transfer<'w>(&mut self, words: &'w mut [u8]) -> Result<&'w [u8], Self::Error> {
-        self.mutex.lock(move |bus| bus.transfer(words))
+    fn try_transfer<'w>(&mut self, words: &'w mut [u8]) -> Result<&'w [u8], Self::Error> {
+        self.mutex.lock(move |bus| bus.try_transfer(words))
     }
 }
 
@@ -90,7 +90,7 @@ where
 {
     type Error = <M::Bus as spi::Write<u8>>::Error;
 
-    fn write(&mut self, words: &[u8]) -> Result<(), Self::Error> {
-        self.mutex.lock(|bus| bus.write(words))
+    fn try_write(&mut self, words: &[u8]) -> Result<(), Self::Error> {
+        self.mutex.lock(|bus| bus.try_write(words))
     }
 }
